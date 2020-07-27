@@ -1,4 +1,5 @@
 import datetime
+from dateutil.relativedelta import relativedelta
 
 class Transaction:
 	def __init__(self, ammount, date, currency, comment = '', tags = []):
@@ -46,6 +47,7 @@ class Transactions:
 	
 	def sort(self):
 		self._transactions = sort_transactions_by_date(self._transactions)
+		return self._transactions
 		
 	def get_by_date(self, From = None, To = None):
 		return Transactions(filter_by_date(self._transactions, From = From, To = To))
@@ -90,8 +92,24 @@ class Transactions:
 	
 	def sum(self):
 		return sum([a.ammount for a in self._transactions])
+	
+	def monthly_totals(self):
+		self.sort()
+		dates = []
+		dates.append(self[0].date.replace(day=1, hour=0, minute=0, second=0, microsecond=0))
+		while True:
+			if dates[-1] <= self._transactions[-1].date:
+				dates.append(dates[-1] + relativedelta(months = 1))
+			else:
+				break
+		ammounts = []
+		for date in dates:
+			ammounts.append(0)
+			for transaction in self._transactions:
+				if date <= transaction.date < date + relativedelta(months = 1):
+					ammounts[-1] += transaction.ammount
+		return dates, ammounts
 		
-
 def sort_transactions_by_date(transactions: list):
 	dates = [transaction.date for transaction in transactions]
 	dates.sort()
