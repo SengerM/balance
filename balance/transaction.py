@@ -62,6 +62,14 @@ class Transactions:
 		else:
 			return Transactions(filter_by_tags(self._transactions, criteria, tags))
 	
+	def list_tags(self):
+		tags = []
+		for transaction in self._transactions:
+			for tag in transaction.tags:
+				if tag not in tags:
+					tags.append(tag)
+		return tags
+	
 	def append(self, transaction: Transaction):
 		if not isinstance(transaction, Transaction):
 			raise TypeError('<transaction> must be an instance of Transaction')
