@@ -87,6 +87,10 @@ class Transactions:
 		
 	def __len__(self):
 		return len(self._transactions)
+	
+	def sum(self):
+		return sum([a.ammount for a in self._transactions])
+		
 
 def sort_transactions_by_date(transactions: list):
 	dates = [transaction.date for transaction in transactions]
