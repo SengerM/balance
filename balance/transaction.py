@@ -1,13 +1,32 @@
 import datetime
 
-class transaction:
-	
+class Transaction:
 	def __init__(self, ammount, date, currency, comment = '', tags = []):
-		self.ammount = ammount
-		self.date = date
-		self.comment = comment
-		self.tags = tags
-		self.currency = currency
+		self._ammount = ammount
+		self._date = date
+		self._comment = comment
+		self._tags = tags
+		self._currency = currency
+	
+	@property
+	def ammount(self):
+		return self._ammount
+	
+	@property
+	def date(self):
+		return self._date
+	
+	@property
+	def comment(self):
+		return self._comment
+	
+	@property
+	def tags(self):
+		return self._tags
+	
+	@property
+	def currency(self):
+		return self._currency
 	
 	def __str__(self):
 		string = 'ammount: ' + str(self.ammount) + ', currency: ' + str(self.currency) + ', date = ' + str(self.date)
@@ -17,7 +36,51 @@ class transaction:
 			string += ', tags: ' + str(self.tags)
 		return string
 
-def sort_transactions_by_date(transactions):
+class Transactions:
+	def __init__(self, transactions: list = []):
+		for transaction in transactions:
+			if not isinstance(transaction, Transaction):
+				raise TypeError('<transactions> must be a list of Transaction objects')
+		self._transactions = transactions
+		self.sort()
+	
+	def sort(self):
+		self._transactions = sort_transactions_by_date(self._transactions)
+		
+	def get_by_date(self, From = None, To = None):
+		return Transactions(filter_by_date(self._transactions, From = From, To = To))
+	
+	def From(self, From):
+		return self.get_by_date(From = From)
+		
+	def To(self, To):
+		return self.get_by_date(To = To)
+	
+	def tags(self, tags, criteria='have all'):
+		if isinstance(tags, str):
+			return Transactions(filter_by_tags(self._transactions, criteria, [tags]))
+		else:
+			return Transactions(filter_by_tags(self._transactions, criteria, tags))
+	
+	def append(self, transaction: Transaction):
+		if not isinstance(transaction, Transaction):
+			raise TypeError('<transaction> must be an instance of Transaction')
+		self._transactions.append(transaction)
+	
+	def __getitem__(self, key):
+		return self._transactions[key]
+	
+	def __add__(self, other):
+		return Transactions(self._transactions + other._transactions)
+	
+	def __iter__(self):
+		for transaction in self._transactions:
+			yield transaction
+		
+	def __len__(self):
+		return len(self._transactions)
+
+def sort_transactions_by_date(transactions: list):
 	dates = [transaction.date for transaction in transactions]
 	dates.sort()
 	ordered_transactions = []
