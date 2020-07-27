@@ -52,23 +52,3 @@ class Account:
 		self._balance = []
 		for idx, transaction in enumerate(self._transactions):
 			self._balance.append(self._balance[idx-1] + transaction.ammount if idx>0 else transaction.ammount)
-	
-	# ~ def plot_waterfall(self, From = None, To = None):
-		# ~ transactions_to_plot = self._transactions.get_by_date(From,To)
-		# ~ if From != None:
-			# ~ transactions_to_integrate = self.transactions.filter_by_date(To = From-datetime.timedelta(days=1))
-			# ~ integrated_transaction = Transaction(
-				# ~ ammount = sum([t.ammount for t in transactions_to_integrate]), 
-				# ~ date = From-datetime.timedelta(days=1), 
-				# ~ currency = account.currency, 
-				# ~ comment = 'SUM OF TRANSACTIONS PREVIOUS TO ' + str(From)
-			# ~ )
-			# ~ transactions_to_plot.insert(0,integrated_transaction)
-		# ~ fig = go.Figure()
-		# ~ waterfall_plot_transactions(transactions_to_plot, fig)
-		# ~ fig.update_layout(
-			# ~ title = self.account_name,
-			# ~ yaxis_title = self.currency
-		# ~ )
-		# ~ return fig
-		
