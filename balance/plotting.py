@@ -7,7 +7,7 @@ def waterfall_plot_transactions(transactions: Transactions):
 		go.Waterfall(
 			x = [t.date for t in transactions],
 			y = [t.ammount for t in transactions],
-			text = ['Comment: ' + t.comment + '<br>Tags: ' + str(t.tags) for t in transactions],
+			text = [str(t.date) + '<br>Comment: ' + t.comment + '<br>Tags: ' + str(t.tags) for t in transactions],
 			offset = 0, # See https://plot.ly/python/reference/#waterfall-offset
 		)
 	)
