@@ -1,11 +1,11 @@
 from .transaction import Transactions
 import plotly.graph_objects as go
 
-def waterfall_plot_transactions(transactions: Transactions):
+def waterfall_plot_transactions(transactions: Transactions, plot_dates=True):
 	fig = go.Figure()
 	fig.add_trace(
 		go.Waterfall(
-			x = [t.date for t in transactions],
+			x = [t.date for t in transactions] if plot_dates else None,
 			y = [t.ammount for t in transactions],
 			text = [str(t.date) + '<br>Comment: ' + t.comment + '<br>Tags: ' + str(t.tags) for t in transactions],
 			offset = 0, # See https://plot.ly/python/reference/#waterfall-offset
