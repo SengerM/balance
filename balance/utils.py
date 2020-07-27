@@ -9,17 +9,27 @@ def parse_account(book, account_col_number):
 	accounts_sheet = book.sheet_by_index(0)
 	account = Account(account_name = accounts_sheet.col_values(account_col_number)[0], currency = accounts_sheet.col_values(account_col_number)[2])
 	transactions = Transactions()
+	prev_date = None
 	for idx, raw_transaction in enumerate(accounts_sheet.col_values(account_col_number)[HEADER_LINES:]):
 		if raw_transaction == '':
 			continue
 		date_cell = accounts_sheet.col_values(0)[idx+HEADER_LINES]
 		tags = accounts_sheet.col_values(2)[idx+HEADER_LINES].split(', ')
-		if tags == ['']: tags = []
+		if tags == ['']: 
+			tags = []
+			
+		date = datetime.datetime(*xlrd.xldate_as_tuple(date_cell, book.datemode)) if date_cell != '' else None
+		if prev_date == date:
+			k_dates_equal += 1
+			date += datetime.timedelta(hours = k_dates_equal)
+		else:
+			prev_date = date
+			k_dates_equal = 0
 		transactions.append(
 			Transaction(
 				ammount = raw_transaction,
 				currency = account.currency,
-				date = datetime.datetime(*xlrd.xldate_as_tuple(date_cell, book.datemode)) if date_cell != '' else None,
+				date = date,
 				comment = accounts_sheet.col_values(1)[idx+HEADER_LINES],
 				tags = tags,
 				)
