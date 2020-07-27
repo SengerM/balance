@@ -94,6 +94,8 @@ class Transactions:
 		return sum([a.ammount for a in self._transactions])
 	
 	def monthly_totals(self):
+		if len(self._transactions) == 0:
+			return [], []
 		self.sort()
 		dates = []
 		dates.append(self[0].date.replace(day=1, hour=0, minute=0, second=0, microsecond=0))
@@ -109,6 +111,20 @@ class Transactions:
 				if date <= transaction.date < date + relativedelta(months = 1):
 					ammounts[-1] += transaction.ammount
 		return dates, ammounts
+	
+	def credits(self):
+		trans = []
+		for transaction in self._transactions:
+			if transaction.ammount > 0:
+				trans.append(transaction)
+		return Transactions(trans)
+	
+	def debits(self):
+		trans = []
+		for transaction in self._transactions:
+			if transaction.ammount < 0:
+				trans.append(transaction)
+		return Transactions(trans)
 		
 def sort_transactions_by_date(transactions: list):
 	dates = [transaction.date for transaction in transactions]
